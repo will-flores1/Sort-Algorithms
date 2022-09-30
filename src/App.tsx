@@ -1,14 +1,30 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
 import "./App.css";
-import Header from "./components/Header/Header";
+import Header from "./components/Header";
+import SortInterface from "./components/SortInterface";
 
 function App() {
-	const [count, setCount] = useState(0);
+	// Size of bar chart
+	const [lengthOfArray, setLengthOfArray] = useState(0);
+	// Sets new array for bar chart when 'Generate New Array' is clicked
+	const [generateNewArray, setGenerateNewArray] = useState(false);
+	// Value of sort button clicked
+	const [conductSort, setConductSort] = useState("");
 
 	return (
 		<div className="App">
-			<Header />
+			<Header
+				setLengthOfArray={setLengthOfArray}
+				setGenerateNewArray={setGenerateNewArray}
+				setConductSort={setConductSort}
+			/>
+			<SortInterface
+				lengthOfArray={lengthOfArray}
+				generateNewArray={generateNewArray}
+				setGenerateNewArray={setGenerateNewArray}
+				conductSort={conductSort}
+				setConductSort={setConductSort}
+			/>
 		</div>
 	);
 }
