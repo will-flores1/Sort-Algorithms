@@ -18,11 +18,12 @@ function SortInterface(props: Props) {
 			array[i].height = Math.floor(Math.random() * 500 + 10);
 			array[i].sorted = false;
 		}
+		console.log(array);
 		return array;
 	});
 
 	return (
-		<div>
+		<div className="sort-interface">
 			{arrayToSort.map((bar, index) => {
 				return (
 					<Bar
