@@ -1,5 +1,6 @@
 import React, { SyntheticEvent } from "react";
 import "../App.css";
+import Slider from "./Slider";
 
 interface Props {
 	setLengthOfArray: React.Dispatch<React.SetStateAction<number>>;
@@ -15,6 +16,16 @@ function Header(props: Props) {
 			selectableSortAlgorithms[i].classList.add("unclickable");
 		}
 		props.setConductSort(e.target.textContent);
+	};
+
+	const toggleGenerateNewArray = () => {
+		let selectableElements = Array.from(
+			document.querySelectorAll(".selectable")
+		);
+		selectableElements.forEach((element) => {
+			element.classList.remove("unclickable");
+		});
+		props.setGenerateNewArray(true);
 	};
 
 	return (
@@ -37,9 +48,12 @@ function Header(props: Props) {
 				<h2 className="selectable" id="arraySize-nav">
 					Array Size
 				</h2>
+				<Slider setLengthOfArray={props.setLengthOfArray} />
 			</div>
 			<div>
-				<h2 className="selectable">Generate New Array</h2>
+				<h2 className="selectable" onClick={toggleGenerateNewArray}>
+					Generate New Array
+				</h2>
 			</div>
 		</nav>
 	);
