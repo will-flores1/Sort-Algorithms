@@ -10,6 +10,7 @@ function App() {
 	const [generateNewArray, setGenerateNewArray] = useState(false);
 	// Value of sort button clicked
 	const [conductSort, setConductSort] = useState("");
+	// console.log(`lengthOfArray: ${lengthOfArray}`);
 
 	return (
 		<div className="App">
