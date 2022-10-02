@@ -1,29 +1,137 @@
-#root {
-	max-width: 1280px;
-	margin: 0 auto;
-	padding: 2rem;
-	text-align: center;
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+:root {
+	font-size: calc(12px + 0.2vw);
 	font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
 		Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+	--neutralDark: #0f172a;
+	--offWhite: #f4f4f5;
+	--lightBlue: #2563eb;
+	--red: #881337;
+	--gray: #f4f4f554;
+	--lightRed: #f87171;
+	--green: #16a34a;
 }
 
 html,
 body {
-	background-color: black;
+	background: #000000;
 }
 
-.header-container {
+.unclickable {
+	pointer-events: none;
+	opacity: 0.4;
+}
+
+.app-container {
 	display: flex;
-	justify-content: space-between;
-	width: 100%;
-	background-color: white;
+	flex-direction: column;
 }
 
-.sort-container {
+.nav-container {
+	background-color: #18181b;
 	display: flex;
-	gap: 3rem;
+	justify-content: center;
+	align-items: center;
+	padding: 1rem;
+	color: var(--offWhite);
+	text-align: center;
 }
-
-.selectable {
+@media (max-width: 913px) {
+	:root {
+		font-size: 10px;
+	}
+	.nav-container {
+		gap: 4rem;
+	}
+	input[type="range"] {
+		width: 120px;
+		height: 7px;
+	}
+}
+@media (max-width: 684px) {
+	:root {
+		font-size: 8px;
+	}
+	.nav-container {
+		gap: 3rem;
+	}
+	input[type="range"] {
+		width: 100px;
+		height: 6px;
+	}
+}
+@media (max-width: 540px) {
+	:root {
+		font-size: 6px;
+	}
+	.nav-container {
+		gap: 2rem;
+	}
+	input[type="range"] {
+		width: 80px;
+	}
+}
+@media (max-width: 406px) {
+	:root {
+		font-size: 5px;
+	}
+	.nav-container {
+		gap: 1.5rem;
+	}
+	input[type="range"] {
+		width: 60px;
+		height: 5px;
+	}
+}
+@media (max-width: 332px) {
+	.nav-container {
+		gap: 0.1rem;
+	}
+	input[type="range"] {
+		width: 50px;
+	}
+}
+.nav-container > div {
+	display: flex;
+	align-items: center;
+	gap: 2rem;
+	padding: 1rem;
+	border-radius: 1rem;
+}
+.nav-container h2:hover {
+	color: var(--gray);
+	/* background-color: #f4f4f550; */
 	cursor: pointer;
+}
+
+input[type="range"] {
+	cursor: pointer;
+}
+/* Array Size nav item does nothing on hover */
+#arraySize-nav:hover {
+	color: var(--offWhite);
+	cursor: default;
+}
+
+.sort-interface {
+	display: flex;
+	align-self: center;
+	padding: 0 5rem;
+	width: 100%;
+	gap: 1px;
+}
+.bar {
+	flex: 1;
+	background-color: var(--lightRed);
+}
+.bar.sorted {
+	background-color: var(--green);
+}
+.bar.highlighted {
+	background-color: var(--lightBlue);
 }
