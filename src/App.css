@@ -101,12 +101,18 @@ body {
 	align-items: center;
 	gap: 2rem;
 	padding: 1rem;
+	border: 5px solid var(--offWhite);
 	border-radius: 1rem;
 }
 .nav-container h2:hover {
 	color: var(--gray);
-	/* background-color: #f4f4f550; */
 	cursor: pointer;
+}
+
+.sort-selection > h2 {
+	border: 1px solid var(--offWhite);
+	padding: 1px;
+	border-radius: 1rem;
 }
 
 input[type="range"] {
