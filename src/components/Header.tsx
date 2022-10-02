@@ -8,7 +8,7 @@ interface Props {
 	setConductSort: React.Dispatch<React.SetStateAction<string>>;
 }
 function Header(props: Props) {
-	const handleSortSelection = (e: SyntheticEvent) => {
+	const handleSortSelection = (e: any) => {
 		let selectableSortAlgorithms = Array.from(
 			document.querySelectorAll(".selectable")
 		);
