@@ -15,7 +15,13 @@ interface InterfaceProps {
 	generateNewArray: boolean;
 	setGenerateNewArray: React.Dispatch<React.SetStateAction<boolean>>;
 	conductSort: string;
-	setConductSort: React.Dispatch<React.SetStateAction<string | null>>;
+	setConductSort: React.Dispatch<React.SetStateAction<string>>;
+}
+
+interface mergeCopyTypes {
+	height: number | null | undefined;
+	sorted?: boolean;
+	index?: number;
 }
 
 function SortInterface(props: InterfaceProps) {
@@ -89,10 +95,9 @@ function SortInterface(props: InterfaceProps) {
 
 	// Selection Sort & Bubble Sort
 	useEffect(() => {
-		if (props.conductSort === null) {
+		if (props.conductSort === "") {
 			return;
 		} else if (props.conductSort === "Selection Sort") {
-			let i = currentI.current; // maybe delete
 			// If first unsorted is 0, get first unsorted index
 			if (firstUnsorted.current === null) {
 				for (let i = 0; i < arrayToSort.length; i++) {
@@ -161,7 +166,7 @@ function SortInterface(props: InterfaceProps) {
 								}
 							);
 							firstUnsorted.current = null;
-							props.setConductSort(null);
+							props.setConductSort("");
 						} else {
 							firstUnsorted.current = firstUnsorted.current! + 1;
 						}
@@ -273,7 +278,7 @@ function SortInterface(props: InterfaceProps) {
 							}
 						}
 					);
-					props.setConductSort(null);
+					props.setConductSort("");
 				} else {
 					handleHighlights(i!);
 					if (i === lastUnsorted.current! - 1) {
@@ -305,6 +310,292 @@ function SortInterface(props: InterfaceProps) {
 			}, 15);
 		}
 	}, [arrayToSort, props.conductSort, iterateAgain]);
+
+	// Merge Sort
+	const mergeCopy: React.MutableRefObject<mergeCopyTypes | null | any> =
+		useRef(null);
+	const mergeSorted: React.MutableRefObject<any | null> = useRef(null);
+	const arrayMorphs: React.MutableRefObject<any | null> = useRef([]);
+
+	useEffect(() => {
+		if (props.conductSort === "") {
+			mergeCopy.current = null;
+			mergeSorted.current = null;
+			arrayMorphs.current = [];
+			return;
+		} else if (props.conductSort === "Merge Sort") {
+			if (mergeCopy.current === null) {
+				mergeCopy.current = [];
+				for (let i = 0; i < arrayToSort.length; i++) {
+					mergeCopy.current[i] = {
+						height: arrayToSort[i].height,
+						sorted: false,
+						index: i,
+					};
+				}
+			}
+			if (mergeSorted.current === null) {
+				mergeSorted.current = [];
+				for (let i = 0; i < arrayToSort.length; i++) {
+					mergeSorted.current[i] = {
+						height: arrayToSort[i].height,
+					};
+				}
+				mergeSorted.current.sort((a: any, b: any) => a.height - b.height);
+			}
+
+			let domArray = Array.from(document.querySelectorAll(".bar"));
+			mergeSort(mergeCopy.current);
+			iterateOverMorphs(arrayMorphs.current);
+			function iterateOverMorphs(morphArray: any) {
+				for (let i = 0; i < morphArray.length; i++) {
+					setTimeout(() => {
+						setArrayToSort(morphArray[i]);
+						if (i === morphArray.length - 1) {
+							Array.from(document.querySelectorAll(".selectable")).forEach(
+								(element) => {
+									if (element.textContent === "Generate New Array") {
+										element.classList.remove("unclickable");
+									}
+								}
+							);
+							props.setConductSort("");
+						}
+					}, 30 * i);
+				}
+			}
+			function mergeSort(array: any): any {
+				let middle = Math.floor(array.length / 2);
+				let leftArray = [];
+				let rightArray = [];
+
+				if (array.length === 1) {
+					return array;
+				}
+				for (let i = 0; i < middle; i++) {
+					leftArray.push(array[i]);
+				}
+				for (let i = middle; i < array.length; i++) {
+					rightArray.push(array[i]);
+				}
+				leftArray = mergeSort(leftArray);
+				rightArray = mergeSort(rightArray);
+
+				return merge(leftArray, rightArray);
+
+				function merge(left: any, right: any) {
+					let leftMostPosition = left[0].index;
+					let newArray = [];
+
+					while (left[0] && right[0]) {
+						if (left[0].height <= right[0].height) {
+							left[0].index = leftMostPosition;
+							newArray.push(left[0]);
+							mergeCopy.current[leftMostPosition] = left[0];
+							leftMostPosition++;
+							left.shift();
+							for (let i = 0; i < mergeCopy.current.length; i++) {
+								if (
+									mergeSorted.current[i].height === mergeCopy.current[i].height
+								) {
+									mergeCopy.current[i].sorted = true;
+								} else {
+									mergeCopy.current[i].sorted = false;
+								}
+							}
+							let arrayCopy = [];
+							for (let i = 0; i < mergeCopy.current.length; i++) {
+								arrayCopy[i] = {
+									height: mergeCopy.current[i].height,
+									sorted: mergeCopy.current[i].sorted,
+									index: mergeCopy.current[i].index,
+								};
+							}
+							arrayMorphs.current!.push(arrayCopy);
+						} else {
+							right[0].index = leftMostPosition;
+							newArray.push(right[0]);
+							mergeCopy.current[leftMostPosition] = right[0];
+							leftMostPosition++;
+							right.shift();
+							for (let i = 0; i < mergeCopy.current.length; i++) {
+								if (
+									mergeSorted.current[i].height === mergeCopy.current[i].height
+								) {
+									mergeCopy.current[i].sorted = true;
+								} else {
+									mergeCopy.current[i].sorted = false;
+								}
+							}
+							let arrayCopy = [];
+							for (let i = 0; i < mergeCopy.current.length; i++) {
+								arrayCopy[i] = {
+									height: mergeCopy.current[i].height,
+									sorted: mergeCopy.current[i].sorted,
+									index: mergeCopy.current[i].index,
+								};
+							}
+							arrayMorphs.current.push(arrayCopy);
+						}
+					}
+					while (left[0]) {
+						left[0].index = leftMostPosition;
+						newArray.push(left[0]);
+						mergeCopy.current[leftMostPosition] = left[0];
+						leftMostPosition++;
+						left.shift();
+						for (let i = 0; i < mergeCopy.current.length; i++) {
+							if (
+								mergeSorted.current[i].height === mergeCopy.current[i].height
+							) {
+								mergeCopy.current[i].sorted = true;
+							} else {
+								mergeCopy.current[i].sorted = false;
+							}
+						}
+						let arrayCopy = [];
+						for (let i = 0; i < mergeCopy.current.length; i++) {
+							arrayCopy[i] = {
+								height: mergeCopy.current[i].height,
+								sorted: mergeCopy.current[i].sorted,
+								index: mergeCopy.current[i].index,
+							};
+						}
+						arrayMorphs.current.push(arrayCopy);
+					}
+					while (right[0]) {
+						right[0].index = leftMostPosition;
+						newArray.push(right[0]);
+						mergeCopy.current[leftMostPosition] = right[0];
+						leftMostPosition++;
+						right.shift();
+						for (let i = 0; i < mergeCopy.current.length; i++) {
+							if (
+								mergeSorted.current[i].height === mergeCopy.current[i].height
+							) {
+								mergeCopy.current[i].sorted = true;
+							} else {
+								mergeCopy.current[i].sorted = false;
+							}
+						}
+						let arrayCopy = [];
+						for (let i = 0; i < mergeCopy.current.length; i++) {
+							arrayCopy[i] = {
+								height: mergeCopy.current[i].height,
+								sorted: mergeCopy.current[i].sorted,
+								index: mergeCopy.current[i].index,
+							};
+						}
+						arrayMorphs.current.push(arrayCopy);
+					}
+					return newArray;
+				}
+			}
+		}
+	}, [props.conductSort]);
+
+	// Quick Sort
+	const quickSorted: React.MutableRefObject<any | null> = useRef(null);
+	const quickCopy: React.MutableRefObject<any | null> = useRef(null);
+	const quickMorphs: React.MutableRefObject<any | null> = useRef(null);
+
+	useEffect(() => {
+		if (props.conductSort === "") {
+			quickSorted.current = null;
+			quickCopy.current = null;
+			quickMorphs.current = null;
+		} else if (props.conductSort === "Quick Sort") {
+			if (quickSorted.current === null) {
+				quickSorted.current = [];
+				for (let i = 0; i < arrayToSort.length; i++) {
+					quickSorted.current[i] = arrayToSort[i].height;
+				}
+				quickSorted.current.sort((a: number, b: number) => a - b);
+			}
+			if (quickCopy.current === null) {
+				quickCopy.current = [];
+				for (let i = 0; i < arrayToSort.length; i++) {
+					quickCopy.current[i] = {
+						height: arrayToSort[i].height,
+						sorted: false,
+						index: i,
+					};
+				}
+			}
+			if (quickMorphs.current === null) {
+				quickMorphs.current = [];
+			}
+			quickSort(quickCopy.current, 0, quickCopy.current.length - 1);
+			iterateOverMorphs(quickMorphs.current);
+
+			function iterateOverMorphs(morphArray: any) {
+				for (let i = 0; i < morphArray.length; i++) {
+					setTimeout(() => {
+						setArrayToSort(morphArray[i]);
+						if (i === morphArray.length - 1) {
+							Array.from(document.querySelectorAll(".selectable")).forEach(
+								(element) => {
+									if (element.textContent === "Generate New Array") {
+										element.classList.remove("unclickable");
+									}
+								}
+							);
+							props.setConductSort("");
+						}
+					}, 70 * i);
+				}
+			}
+
+			function quickSort(array: any, left: any, right: any) {
+				let index = partition(array, left, right);
+
+				if (left < index - 1) {
+					quickSort(array, left, index - 1);
+				}
+				if (index < right) {
+					quickSort(array, index, right);
+				}
+			}
+
+			function partition(array: any, left: any, right: any) {
+				let pivot = array[Math.floor(left + (right - left) / 2)].height;
+				while (left <= right) {
+					while (array[left].height < pivot) {
+						left++;
+					}
+					while (array[right].height > pivot) {
+						right--;
+					}
+
+					if (left <= right) {
+						let tempStorage = array[left];
+						array[left] = array[right];
+						array[right] = tempStorage;
+
+						for (let i = 0; i < array.length; i++) {
+							if (array[i].height === quickSorted.current[i]) {
+								array[i].sorted = true;
+							} else {
+								array[i].sorted = false;
+							}
+						}
+
+						let newArray = [];
+						for (let i = 0; i < quickCopy.current.length; i++) {
+							newArray[i] = {
+								height: quickCopy.current[i].height,
+								sorted: quickCopy.current[i].sorted,
+							};
+						}
+						quickMorphs.current.push(newArray);
+						left++;
+						right--;
+					}
+				}
+				return left;
+			}
+		}
+	}, [props.conductSort]);
 
 	return (
 		<div className="sort-interface">
