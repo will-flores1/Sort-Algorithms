@@ -12,9 +12,8 @@ function Slider(props: SliderProps) {
 	};
 
 	useEffect(() => {
-		props.setLengthOfArray(
-			parseInt(document.getElementById("numberOfElements")?.value)
-		);
+		let numberOfElements: any = document.getElementById("numberOfElements");
+		props.setLengthOfArray(parseInt(numberOfElements.value));
 	}, []);
 
 	return (
